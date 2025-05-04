@@ -1,27 +1,19 @@
 import argparse
 import os
 import requests
-
-try:
-    import openai
-except ImportError:
-    openai = None
+import openai
+import tiktoken
 
 def count_tokens_openai(file_path, model="gpt-3.5-turbo"):
     if openai is None:
         raise ImportError("openai package not installed. Run `pip install openai`.")
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
-    # Use tiktoken for token counting if available
-    try:
-        import tiktoken
-    except ImportError:
-        raise ImportError("tiktoken package not installed. Run `pip install tiktoken` for accurate counting.")
     encoding = tiktoken.encoding_for_model(model)
     tokens = encoding.encode(content)
     return len(tokens)
 
-def count_tokens_ollama(file_path, model="llama3"):
+def count_tokens_ollama(file_path, model="llama3.1:latest"):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
     # Ollama's /api/tokenize endpoint
